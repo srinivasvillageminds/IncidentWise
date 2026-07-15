@@ -1,0 +1,45 @@
+{
+  "plant": "Example Refinery Unit 10 (fictional - replace with your site model)",
+  "comment": "Hand-editable plant topology using UNIT-EQUIP-NUMBER[SHELL] tag convention (10-E-109A = unit 10, exchanger 109, shell A). Distances in metres; hazards are free text used verbatim in permit/handover analysis. This is the target format for future GA-drawing/P&ID extraction.",
+  "units": [
+    {"name": "Unit-10 (CDU)", "description": "Crude distillation unit"},
+    {"name": "OSBL", "description": "Offsites: flare, closed blowdown"}
+  ],
+  "equipment": [
+    {"tag": "10-E-109A", "unit": "Unit-10 (CDU)", "type": "shell-and-tube exchanger", "service": "crude preheat train, shell A", "hazards": ["hydrocarbon", "hot surface 180C", "adjacent shells in service during single-shell cleaning"]},
+    {"tag": "10-E-109B", "unit": "Unit-10 (CDU)", "type": "shell-and-tube exchanger", "service": "crude preheat train, shell B", "hazards": ["hydrocarbon", "hot surface 180C"]},
+    {"tag": "10-E-109C", "unit": "Unit-10 (CDU)", "type": "shell-and-tube exchanger", "service": "crude preheat train, shell C", "hazards": ["hydrocarbon", "hot surface 180C"]},
+    {"tag": "10-E-109D", "unit": "Unit-10 (CDU)", "type": "shell-and-tube exchanger", "service": "crude preheat train, shell D", "hazards": ["hydrocarbon", "hot surface 180C"]},
+    {"tag": "10-E-110", "unit": "Unit-10 (CDU)", "type": "shell-and-tube exchanger", "service": "kero/crude exchanger", "hazards": ["hydrocarbon", "spectacle blind on bypass"]},
+    {"tag": "10-E-111", "unit": "Unit-10 (CDU)", "type": "shell-and-tube exchanger", "service": "VR/crude exchanger", "hazards": ["vacuum residue 300C", "autoignition on leak"]},
+    {"tag": "10-E-112", "unit": "Unit-10 (CDU)", "type": "shell-and-tube exchanger", "service": "VR/crude exchanger", "hazards": ["vacuum residue 300C", "autoignition on leak"]},
+    {"tag": "10-P-103A", "unit": "Unit-10 (CDU)", "type": "centrifugal pump", "service": "hot crude, A of A/B pair", "hazards": ["hydrocarbon under pressure", "seal leak history", "hot surface"]},
+    {"tag": "10-P-103B", "unit": "Unit-10 (CDU)", "type": "centrifugal pump", "service": "hot crude, B of A/B pair", "hazards": ["hydrocarbon under pressure", "auto-start on A trip"]},
+    {"tag": "10-P-104", "unit": "Unit-10 (CDU)", "type": "centrifugal pump", "service": "naphtha reflux", "hazards": ["light hydrocarbon", "flammable atmosphere on seal failure"]},
+    {"tag": "10-C-201", "unit": "Unit-10 (CDU)", "type": "distillation column", "service": "crude column", "hazards": ["hydrocarbon inventory", "confined space on entry", "work at height on platforms"]},
+    {"tag": "10-K-101", "unit": "Unit-10 (CDU)", "type": "reciprocating compressor", "service": "off-gas", "hazards": ["light HC gas", "high pressure", "vibration", "rotating machinery"]},
+    {"tag": "10-CBD-01", "unit": "OSBL", "type": "closed blowdown drum", "service": "closed blowdown header", "hazards": ["hydrocarbon accumulation", "H2S traces", "blinding/deblinding routine"]},
+    {"tag": "10-F-101", "unit": "Unit-10 (CDU)", "type": "fired heater", "service": "crude heating", "hazards": ["open flame", "fuel gas", "no unauthorized hot work nearby"]},
+    {"tag": "FL-01", "unit": "OSBL", "type": "flare header", "service": "relief collection", "hazards": ["sudden release", "radiant heat", "no hot work within 30 m"]},
+    {"tag": "ST-12", "unit": "Unit-10 (CDU)", "type": "steam trap station", "service": "MP steam / VR tracing", "hazards": ["VR spillage history", "hot condensate"]},
+    {"tag": "LPD-7", "unit": "Unit-10 (CDU)", "type": "low point drain funnel", "service": "closed drain", "hazards": ["hydrocarbon accumulation", "cover often missing"]}
+  ],
+  "adjacency": [
+    {"a": "10-E-109A", "b": "10-E-109B", "distance_m": 2},
+    {"a": "10-E-109B", "b": "10-E-109C", "distance_m": 2},
+    {"a": "10-E-109C", "b": "10-E-109D", "distance_m": 2},
+    {"a": "10-E-109A", "b": "10-E-110", "distance_m": 8},
+    {"a": "10-E-111", "b": "10-E-112", "distance_m": 5},
+    {"a": "10-E-109D", "b": "10-E-111", "distance_m": 10},
+    {"a": "10-P-103A", "b": "10-P-103B", "distance_m": 4},
+    {"a": "10-P-103A", "b": "10-E-109A", "distance_m": 9},
+    {"a": "10-P-104", "b": "10-C-201", "distance_m": 12},
+    {"a": "10-C-201", "b": "10-E-109A", "distance_m": 14},
+    {"a": "10-K-101", "b": "10-P-103A", "distance_m": 15},
+    {"a": "10-CBD-01", "b": "LPD-7", "distance_m": 6},
+    {"a": "10-CBD-01", "b": "10-E-111", "distance_m": 18},
+    {"a": "10-F-101", "b": "10-E-109A", "distance_m": 15},
+    {"a": "10-F-101", "b": "FL-01", "distance_m": 40},
+    {"a": "ST-12", "b": "10-E-109A", "distance_m": 6}
+  ]
+}

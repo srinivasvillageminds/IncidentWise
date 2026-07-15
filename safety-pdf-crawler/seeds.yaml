@@ -1,0 +1,50 @@
+# Public seed pages for the safety PDF crawler.
+#
+# Add, remove, or comment-out entries to scope the crawl. Each entry must have:
+#   name:     short identifier, used as the on-disk subdirectory and manifest source_name
+#   url:      the page to crawl (or a direct PDF URL, which will be downloaded as-is)
+#   category: free-form tag preserved for downstream filtering
+#
+# Please ensure you have permission / a legitimate research purpose for each source.
+seeds:
+  - name: oisd_case_studies
+    url: https://www.oisd.gov.in/en-in/CaseStudies
+    category: oil_gas_case_studies
+
+  - name: oisd_incident_guidelines
+    url: https://www.oisd.gov.in/en-in/IncidentGuidelines
+    category: oil_gas_guidelines
+
+  - name: pngrb_incident_analysis
+    url: https://pngrb.gov.in/eng-web/erdmp-incident-analysis.html
+    category: petroleum_incident_analysis
+
+  - name: pngrb_case_studies
+    url: https://www.pngrb.gov.in/eng-web/case-studies.html
+    category: petroleum_case_studies
+
+  - name: peso_annual_reports
+    # HTTPS works on peso.gov.in; using https avoids the http→https redirect roundtrip.
+    url: https://peso.gov.in/web/en/annual-reports
+    category: petroleum_explosives_reports
+
+  - name: ndma_chemical
+    # Hub page: only a few direct PDFs live here. Most chemical-disaster PDFs are
+    # one click deeper (Guidelines / Reports & Studies / Technical Documents).
+    # Run with --max-depth 1 --same-domain-only to reach them.
+    url: https://ndma.gov.in/chemical
+    category: chemical_disaster
+
+  - name: ndma_case_studies_compendium
+    url: https://ndma.gov.in/sites/default/files/PDF/Reports/CASE_STUDIES_COMPENDIUM.pdf
+    category: disaster_case_studies
+
+  - name: sansad_chemical_leaks_question
+    url: https://www.sansad.in/getFile/loksabhaquestions/annex/1712/AU460.pdf?source=pqals
+    category: chemical_accident_statistics
+
+  - name: gujarat_dish_statistics
+    # Hub page: very few direct PDFs. Most accident-statistics PDFs are one click
+    # deeper. Run with --max-depth 1 --same-domain-only to reach them.
+    url: https://dish.gujarat.gov.in/statistics-factory-advice-services.htm
+    category: factory_accident_statistics

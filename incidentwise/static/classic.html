@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IncidentWise — Classic UI</title>
+<style>
+  :root{
+    --bg:#faf9f5; --panel:#ffffff; --ink:#1f1e1a; --muted:#6e6a60;
+    --accent:#c96442; --accent-soft:#f3e0d8; --border:#e6e2d8;
+    --user-bubble:#f0eee6; --code-bg:#f4f2ec; --good:#4a8f5d; --bad:#c04b3c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; flex-direction:column;
+  }
+  .serif{font-family:Georgia,"Times New Roman",serif}
+  header{
+    display:flex; align-items:center; gap:14px; padding:12px 22px;
+    border-bottom:1px solid var(--border); background:var(--bg);
+    position:sticky; top:0; z-index:5;
+  }
+  .mark{display:flex; align-items:center; gap:10px}
+  .mark .logo{
+    width:30px;height:30px;border-radius:8px;background:var(--accent);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:Georgia,serif;font-size:17px;font-weight:700;
+  }
+  .mark h1{font-size:17px;margin:0;font-weight:650;letter-spacing:.2px}
+  .mark small{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
+  .spacer{flex:1}
+  select{
+    background:var(--panel);border:1px solid var(--border);border-radius:9px;
+    padding:7px 10px;font-size:13px;color:var(--ink);outline:none;max-width:220px;
+  }
+  .status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .dot{width:9px;height:9px;border-radius:50%;background:#b6b1a4}
+  .dot.ok{background:var(--good)} .dot.bad{background:var(--bad)}
+  main{flex:1;overflow-y:auto}
+  .thread{max-width:780px;margin:0 auto;padding:28px 20px 40px;display:flex;flex-direction:column;gap:26px}
+  .welcome{text-align:center;margin-top:9vh}
+  .welcome h2{font-family:Georgia,serif;font-size:32px;font-weight:500;margin:0 0 10px}
+  .welcome p{color:var(--muted);margin:0 0 26px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .chips button{
+    background:var(--panel);border:1px solid var(--border);border-radius:999px;
+    padding:9px 16px;font-size:13.5px;color:var(--ink);cursor:pointer;transition:.15s;
+  }
+  .chips button:hover{border-color:var(--accent);color:var(--accent)}
+  .msg{display:flex;flex-direction:column;gap:6px}
+  .msg .who{font-size:12px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;font-weight:600}
+  .msg.user{align-items:flex-end}
+  .msg.user .body{
+    background:var(--user-bubble);border-radius:var(--radius);
+    padding:12px 16px;max-width:85%;white-space:pre-wrap;
+  }
+  .msg.bot .body{max-width:100%}
+  .body h3,.body h4{margin:14px 0 6px;font-family:Georgia,serif;font-weight:600}
+  .body p{margin:8px 0}
+  .body ul,.body ol{margin:8px 0;padding-left:22px}
+  .body li{margin:4px 0}
+  .body code{background:var(--code-bg);border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:13px}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--accent);
+    border-radius:2px;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  sup.cite{cursor:pointer;color:var(--accent);font-weight:700;padding:0 1px;font-size:11px}
+  sup.cite:hover{text-decoration:underline}
+  .warnline{
+    font-size:12.5px;color:#8a5a2a;background:#faf1e2;border:1px solid #eeddbe;
+    border-radius:9px;padding:8px 12px;
+  }
+  .errline{font-size:13px;color:var(--bad);background:#faeae7;border:1px solid #f0cdc5;
+    border-radius:9px;padding:10px 13px}
+  .sources{margin-top:4px}
+  .sources .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;font-weight:600}
+  .srcgrid{display:flex;flex-wrap:wrap;gap:8px}
+  .src{
+    background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:8px 11px;font-size:12.5px;cursor:pointer;max-width:100%;transition:.15s;
+  }
+  .src:hover{border-color:var(--accent)}
+  .src.flash{border-color:var(--accent);background:var(--accent-soft)}
+  .src .t{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:330px}
+  .src .m{color:var(--muted);font-size:11.5px;margin-top:2px}
+  .src .num{color:var(--accent);font-weight:700;margin-right:5px}
+  .src .detail{display:none;margin-top:7px;padding-top:7px;border-top:1px dashed var(--border);
+    color:var(--muted);font-size:12px;max-width:420px;white-space:normal}
+  .src.open .detail{display:block}
+  .src .detail a{color:var(--accent);word-break:break-all}
+  .composer-wrap{background:linear-gradient(transparent,var(--bg) 30%);padding:10px 20px 18px}
+  .composer{
+    max-width:780px;margin:0 auto;background:var(--panel);
+    border:1px solid var(--border);border-radius:18px;
+    box-shadow:0 2px 14px rgba(60,50,30,.06);padding:6px 6px 6px 16px;
+    display:flex;align-items:flex-end;gap:8px;
+  }
+  .composer:focus-within{border-color:#d8cfc0}
+  textarea{
+    flex:1;border:0;outline:0;resize:none;background:transparent;
+    font:inherit;color:var(--ink);padding:10px 0;max-height:160px;
+  }
+  .send{
+    width:38px;height:38px;border:0;border-radius:12px;background:var(--accent);
+    color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;
+    justify-content:center;transition:.15s;flex:none;margin-bottom:2px;
+  }
+  .send:disabled{background:#dcd6c8;cursor:default}
+  .disclaimer{max-width:780px;margin:8px auto 0;text-align:center;font-size:11.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="mark">
+    <div class="logo serif">S</div>
+    <div><h1>IncidentWise</h1><small id="substat">Indian process-safety documents</small></div>
+  </div>
+  <div class="spacer"></div>
+  <select id="mode" title="Retrieval accuracy">
+    <option value="medium">Accuracy: Medium · fastest</option>
+    <option value="good" selected>Accuracy: Good · hybrid</option>
+    <option value="best">Accuracy: Best · rerank</option>
+  </select>
+  <select id="category" title="Restrict retrieval to one document category">
+    <option value="">All categories</option>
+  </select>
+  <div class="status"><span class="dot" id="dot"></span><span id="statustext">checking…</span></div>
+</header>
+
+<main><div class="thread" id="thread">
+  <div class="welcome" id="welcome">
+    <h2>What do you want to know?</h2>
+    <p>Answers are grounded in OISD &amp; PNGRB case studies, incident investigations and guidelines — every claim cited to its source document.</p>
+    <div class="chips">
+      <button data-q="What are the most common root causes across the OISD case studies?">Common root causes in OISD case studies</button>
+      <button data-q="Summarize the key lessons learned from PNGRB incident investigation reports.">Lessons from PNGRB investigations</button>
+      <button data-q="What recurring safety lapses appear in CNG station or city gas incidents?">Recurring lapses in city-gas incidents</button>
+      <button data-q="What recommendations do the incident guidelines give for preventing pipeline failures?">Preventing pipeline failures</button>
+    </div>
+  </div>
+</div></main>
+
+<div class="composer-wrap">
+  <div class="composer">
+    <textarea id="input" rows="1" placeholder="Ask about an incident, standard, or safety practice…"></textarea>
+    <button class="send" id="send" title="Send">↑</button>
+  </div>
+  <div class="disclaimer">Informational only — verify safety-critical decisions against the original standard and your site's competent authority.</div>
+</div>
+
+<script>
+const thread = document.getElementById('thread');
+const input = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+const welcome = document.getElementById('welcome');
+const catSel = document.getElementById('category');
+const modeSel = document.getElementById('mode');
+let history = [];
+let busy = false;
+
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function md(text){
+  let out = [], lines = esc(text).split('\n'), list = null;
+  const closeList = () => { if(list){ out.push(list==='ul'?'</ul>':'</ol>'); list=null; } };
+  const nextListType = (i) => {
+    for(let j=i+1;j<lines.length;j++){
+      if(!lines[j].trim()) continue;
+      if(/^\s*[-*]\s+/.test(lines[j])) return 'ul';
+      if(/^\s*\d+[.)]\s+/.test(lines[j])) return 'ol';
+      return null;
+    }
+    return null;
+  };
+  for(let i=0;i<lines.length;i++){
+    const line = lines[i];
+    let h = line.match(/^(#{2,4})\s+(.*)/);
+    let ul = line.match(/^\s*[-*]\s+(.*)/);
+    let ol = line.match(/^\s*\d+[.)]\s+(.*)/);
+    if(h){ closeList(); out.push(`<h${h[1].length>3?4:3}>${h[2]}</h${h[1].length>3?4:3}>`); }
+    else if(ul){ if(list!=='ul'){closeList(); out.push('<ul>'); list='ul';} out.push(`<li>${ul[1]}</li>`); }
+    else if(ol){ if(list!=='ol'){closeList(); out.push('<ol>'); list='ol';} out.push(`<li>${ol[1]}</li>`); }
+    else if(!line.trim()){ if(!(list && nextListType(i)===list)) closeList(); }
+    else { closeList(); out.push(`<p>${line}</p>`); }
+  }
+  closeList();
+  return out.join('')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<em>$2</em>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\[(W?\d{1,2})\]/g,'<sup class="cite" data-n="$1">[$1]</sup>');
+}
+
+function addMsg(role, html){
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role==='user'?'user':'bot');
+  div.innerHTML = `<div class="who">${role==='user'?'You':'IncidentWise'}</div><div class="body">${html}</div>`;
+  thread.appendChild(div);
+  scrollDown();
+  return div.querySelector('.body');
+}
+function scrollDown(){ document.querySelector('main').scrollTo({top:1e9}); }
+
+function sourceCard(s){
+  const doc = s.doc_url ? `<a href="${esc(s.doc_url)}" target="_blank" rel="noopener">original PDF ↗</a>` : '';
+  const page = s.source_url ? ` · <a href="${esc(s.source_url)}" target="_blank" rel="noopener">source page ↗</a>` : '';
+  return `<div class="src" data-n="${s.n}">
+    <div class="t"><span class="num">${s.n}</span>${esc(s.title||s.file)}</div>
+    <div class="m">${esc(s.category)}${s.doc_type && s.doc_type!=='other' ? ' · '+esc(s.doc_type.replace('_',' ')) : ''} · p.${s.page}/${s.pages_total}</div>
+    <div class="detail">“${esc(s.snippet)}…”<br>${doc}${page}</div>
+  </div>`;
+}
+function webCard(w, i){
+  return `<div class="src" data-n="W${i}">
+    <div class="t"><span class="num">W${i}</span>${esc(w.title)}</div>
+    <div class="m">${w.official?'official (gov.in)':'unverified web'}</div>
+    <div class="detail">${esc(w.snippet)}<br><a href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.url)}</a></div>
+  </div>`;
+}
+
+async function send(q){
+  if(busy) return;
+  q = (q ?? input.value).trim();
+  if(!q) return;
+  busy = true; sendBtn.disabled = true;
+  welcome?.remove();
+  input.value = ''; autosize();
+
+  addMsg('user', esc(q));
+  const body = addMsg('bot', '<span class="cursor"></span>');
+  let answer = '', sources = [], web = [], weak = false, pipeline = '';
+
+  try{
+    const resp = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message:q, history:history.slice(-6),
+                            category:catSel.value||null, mode:modeSel.value})
+    });
+    if(!resp.ok) throw new Error('HTTP '+resp.status);
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+    while(true){
+      const {done, value} = await reader.read();
+      if(done) break;
+      buf += dec.decode(value, {stream:true});
+      let idx;
+      while((idx = buf.indexOf('\n\n')) >= 0){
+        const block = buf.slice(0, idx); buf = buf.slice(idx+2);
+        let ev = 'message', data = '';
+        for(const l of block.split('\n')){
+          if(l.startsWith('event: ')) ev = l.slice(7).trim();
+          else if(l.startsWith('data: ')) data += l.slice(6);
+        }
+        if(!data) continue;
+        const d = JSON.parse(data);
+        if(ev==='sources'){ sources = d.items; web = d.web||[]; weak = d.weak; pipeline = d.pipeline||''; }
+        else if(ev==='token'){ answer += d.t; body.innerHTML = md(answer)+'<span class="cursor"></span>'; scrollDown(); }
+        else if(ev==='error'){ throw new Error(d.message); }
+        else if(ev==='done'){
+          body.innerHTML = md(answer);
+          renderSources(body, sources, web, weak, pipeline);
+          history.push({role:'user', content:q}, {role:'assistant', content:answer});
+        }
+      }
+    }
+  }catch(err){
+    body.innerHTML = `<div class="errline">${esc(String(err.message||err))}</div>`;
+  }finally{
+    busy = false; sendBtn.disabled = false; scrollDown(); input.focus();
+  }
+}
+
+function renderSources(body, sources, web, weak, pipeline){
+  if(weak){
+    body.insertAdjacentHTML('beforeend',
+      `<div class="warnline" style="margin-top:10px">Retrieval confidence is low for this question — the indexed corpus may not cover it. Treat the answer with extra caution.</div>`);
+  }
+  if(!sources.length && !web.length) return;
+  const pipetag = pipeline ? ` · <span style="text-transform:none;letter-spacing:0">${esc(pipeline)}</span>` : '';
+  const webHtml = web.length ? web.map(webCard).join('') : '';
+  body.insertAdjacentHTML('beforeend',
+    `<div class="sources"><div class="label">Sources${pipetag}</div><div class="srcgrid">${sources.map(sourceCard).join('')}${webHtml}</div></div>`);
+  body.querySelectorAll('.src').forEach(el =>
+    el.addEventListener('click', e => { if(e.target.tagName!=='A') el.classList.toggle('open'); }));
+  body.querySelectorAll('sup.cite').forEach(el =>
+    el.addEventListener('click', () => {
+      const card = body.querySelector(`.src[data-n="${el.dataset.n}"]`);
+      if(!card) return;
+      card.classList.add('open','flash');
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(()=>card.classList.remove('flash'), 1200);
+    }));
+}
+
+sendBtn.addEventListener('click', () => send());
+input.addEventListener('keydown', e => {
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+});
+function autosize(){ input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,160)+'px'; }
+input.addEventListener('input', autosize);
+document.querySelectorAll('.chips button').forEach(b =>
+  b.addEventListener('click', () => send(b.dataset.q)));
+
+(async () => {
+  const dot = document.getElementById('dot'), st = document.getElementById('statustext');
+  try{
+    const h = await (await fetch('/api/health')).json();
+    dot.className = 'dot ' + (h.ok ? 'ok' : 'bad');
+    const chatModel = (h.chat && h.chat.model) || h.ollama.model;
+    st.textContent = h.ok
+      ? `${chatModel} · ${h.index_chunks.toLocaleString()} chunks`
+      : !h.ollama.reachable ? 'Ollama not running (needed for embeddings)'
+      : !h.ollama.embed_model_available ? `embed model missing — ollama pull ${h.ollama.embed_model}`
+      : (h.chat ? !h.chat.ready : !h.ollama.model_available)
+        ? (h.chat && h.chat.backend === 'openai' ? 'OPENAI_API_KEY missing'
+           : `model missing — ollama pull ${chatModel}`)
+      : h.index_chunks === 0 ? 'index empty — run ingest.py' : 'not ready';
+  }catch{ dot.className='dot bad'; st.textContent='backend unreachable'; }
+  try{
+    const s = await (await fetch('/api/stats')).json();
+    for(const c of Object.keys(s.categories||{}).sort()){
+      const o = document.createElement('option'); o.value = c; o.textContent = c;
+      catSel.appendChild(o);
+    }
+    if(s.documents) document.getElementById('substat').textContent =
+      `${s.documents} documents · ${Object.keys(s.categories||{}).length} categories`;
+  }catch{}
+  input.focus();
+})();
+</script>
+</body>
+</html>

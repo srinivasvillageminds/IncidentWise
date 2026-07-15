@@ -1,0 +1,34 @@
+# environments & caches
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# local Drive-upload staging (backup_to_restore.py output) - never commit
+_restore_staging/
+safety_gpt_restore.zip
+
+# corpus - NEVER commit the PDFs; the crawler rebuilds them (see PUBLISHING.md)
+*.pdf
+safety-pdf-crawler/data/raw_pdfs/*
+!safety-pdf-crawler/data/raw_pdfs/.gitkeep
+safety-pdf-crawler/data/manifests/*
+!safety-pdf-crawler/data/manifests/.gitkeep
+
+# app runtime artifacts
+incidentwise/chroma_db/
+incidentwise/ocr_cache/
+incidentwise/triage_cache.json
+incidentwise/facts_cache.json
+incidentwise/incidents.json
+incidentwise/ingest_report.json
+incidentwise/drill_library/
+incidentwise/plant_model.json
+
+# evals: commit REPORT.md (your numbers), not raw rows or uncurated drafts
+incidentwise/evals/report.json
+incidentwise/evals/golden_draft.jsonl
+
+# assistant session data
+.claude/
+_growtest

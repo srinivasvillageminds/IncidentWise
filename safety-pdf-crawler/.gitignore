@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Testing & tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project data — keep directory structure, ignore contents
+data/raw_pdfs/**
+!data/raw_pdfs/.gitkeep
+data/manifests/**
+!data/manifests/.gitkeep
+
+# Crawl4AI runtime caches
+.crawl4ai/
+*.log
